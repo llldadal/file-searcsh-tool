@@ -1,0 +1,15 @@
+# Visual Studio 本机缓存
+.vs/
+
+# 编译输出目录
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# 个人设置和资源编辑器缓存
+*.user
+*.suo
+*.aps
