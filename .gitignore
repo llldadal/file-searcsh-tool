@@ -13,3 +13,7 @@ x86/
 *.user
 *.suo
 *.aps
+
+#构建文件
+*.exe
+*.obj

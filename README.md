@@ -34,7 +34,7 @@ v0.1 的目标是递归扫描用户指定的目录，保存文件名、完整路
 ### 方法一：使用 Visual Studio
 
 1. 使用 Visual Studio 打开 `文件搜索项目练习.slnx`。
-2. 选择 `Debug` 和 `x64` 配置。
+2. 选择 `Debug` 和 `x86` 配置。
 3. 执行“生成解决方案”。
 4. 运行生成的程序。
 
@@ -42,15 +42,15 @@ v0.1 的目标是递归扫描用户指定的目录，保存文件名、完整路
 
 在 Visual Studio Developer PowerShell 或 Developer Command Prompt 中进入项目目录，然后执行：
 
-​```powershell
+```powershell
 cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
-​```
+```
 
 运行程序：
 
-​```powershell
+```powershell
 .\file-search.exe
-​```
+```
 
 ## 当前测试
 
@@ -58,17 +58,14 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
 
 预期输出：
 
-​```text
+```text
 text1 "/text1" 123
 text2 "/text2" 1234
 text3 "/text3" 1235
-​```
+```
 
 `std::filesystem::path` 输出时可能自动在路径两侧添加引号，这是正常行为。
-
-## 项目结构
-
-​```text
+```text
 file-searcsh-tool/
 ├── main.cpp
 ├── src/
@@ -76,7 +73,7 @@ file-searcsh-tool/
 │   └── fileinfo.cpp
 ├── README.md
 └── 文件搜索项目练习.slnx
-​```
+```
 
 各文件用途：
 
