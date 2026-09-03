@@ -3,27 +3,25 @@
 #include<iostream>
 using namespace std;
 
-vector<FileInfo> FileList;
 
-void text(FileInfo file) {
-	cout << file.file_name << endl;
-	cout << file.file_path << endl;
-	cout << file.file_size << endl;
-	cout << file.is_directory << endl;
-}
 
 int main() {
 	//测试
-	filesystem::directory_entry text1(L"E:/vsprojects/文件搜索项目练习/text_file_list/text1");
-	filesystem::directory_entry text2(L"E:/vsprojects/文件搜索项目练习/text_file_list/text2.docx");
-	filesystem::directory_entry text3(L"E:/vsprojects/文件搜索项目练习/text_file_list/text3.xlsx");
-
-	FileInfo f1 = GetFile(text1);
-	FileInfo f2 = GetFile(text2);
-	FileInfo f3 = GetFile(text3);
-
-	text(f1);
-	text(f2);
-	text(f3);
-	
+	FileInfo f1, f2, f3;
+	f1.file_name = "text1";
+	f2.file_name = "text2";
+	f3.file_name = "text3";
+	f1.file_path = "/text1";
+	f2.file_path = "/text2";
+	f3.file_path = "/text3";
+	f1.file_size = 123;
+	f2.file_size = 1234;
+	f3.file_size = 1235;
+	vector<FileInfo> FileList;
+	FileList.push_back(f1);
+	FileList.push_back(f2);
+	FileList.push_back(f3);
+	for (FileInfo f : FileList) {
+		cout << f.file_name << " " << f.file_path << " " << f.file_size << endl;
+	}
 }
