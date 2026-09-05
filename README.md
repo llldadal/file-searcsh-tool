@@ -53,7 +53,18 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
 
 ## 当前测试
 ### 搜索测试
-已完成搜索测试，无bug
+测试目录：text
+关键字：csapp
+预期输出：
+```
+Scan directory:text
+Found 3 files.
+Search:csapp
+Find 2 files.
+"text\\text3\\csapp.txt"
+"text\\readable\\csapp.docx"
+```
+
 
 ### 项目结构
 ```
