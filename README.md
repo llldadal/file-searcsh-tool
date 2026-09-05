@@ -58,7 +58,7 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
 
 预期输出
 ```
-Found N files.
+Found 0 files.
 ```
 ### 普通测试
 输入测试目录"test"
@@ -66,8 +66,7 @@ Found N files.
 预期输出
 
 ```
-Found N files.
-readable 0 0
+Found 1 files.
 visible.txt 9 9
 ```
 ### 权限测试
