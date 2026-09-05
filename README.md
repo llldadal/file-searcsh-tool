@@ -14,13 +14,9 @@ v0.1 的目标是递归扫描用户指定的目录，保存文件名、完整路
 - 定义 `FileInfo` 数据结构
 - 使用 `std::vector<FileInfo>` 保存文件信息
 - 完成文件信息容器的基本输出测试
-
-尚未完成：
-
-- 递归扫描目录
-- 文件名关键字搜索
+- 完成递归扫描真实目录
+- 完成单次的简单文件搜索
 - 命令行交互循环
-- 文件系统错误处理
 
 ## 开发环境
 
@@ -53,19 +49,25 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
 ```
 
 ## 当前测试
-
-程序会创建三条模拟文件数据，将其加入 `std::vector<FileInfo>`，然后依次输出。
-
+### 搜索测试
+测试目录：text
+测试输入：csapp missing exit
 预期输出：
-
-```text
-text1 "/text1" 123
-text2 "/text2" 1234
-text3 "/text3" 1235
+```
+Scan directory:text
+Found 3 files.
+Search:csapp
+Find 2 files.
+"text\\text3\\csapp.txt"
+"text\\readable\\csapp.docx"
+Search:missing
+No matches found.
+Search:exit
 ```
 
-`std::filesystem::path` 输出时可能自动在路径两侧添加引号，这是正常行为。
-```text
+
+### 项目结构
+```
 file-searcsh-tool/
 ├── main.cpp
 ├── src/
@@ -82,8 +84,12 @@ file-searcsh-tool/
 - `src/fileinfo.cpp`：后续存放文件信息相关实现
 - `README.md`：项目构建和使用说明
 
+## 项目状态
+
+v0.1 核心功能已完成。
+
 ## 已知限制
 
-当前版本只是 T1/T2 阶段的基础结构，还不能扫描真实目录或执行文件搜索。
-
-完整的 v0.1 功能将在后续任务中逐步实现。
+- 搜索区分大小写
+- 不搜索文件内容
+- 不跟随符号链接
