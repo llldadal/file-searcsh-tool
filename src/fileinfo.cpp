@@ -1,5 +1,4 @@
 #include"fileinfo.h"
-
 FileInfo GetFile(std::filesystem::directory_entry entry) {
 	FileInfo file;
 	file.file_path = entry.path();
@@ -9,7 +8,6 @@ FileInfo GetFile(std::filesystem::directory_entry entry) {
 	}
 	return file;
 }
-
 std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const std::string& keyword) {
 	std::vector<FileInfo> result;
 	for (const FileInfo& file : file_list) {
