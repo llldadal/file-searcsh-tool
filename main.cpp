@@ -8,20 +8,20 @@ int main() {
 
 	vector<FileInfo> file_list;
 
-	string serach_directory_path;
+	string search_directory_path;
 	cout << "Scan directory:";
-	if (!getline(cin, serach_directory_path)) {
+	if (!getline(cin, search_directory_path)) {
 		return 0;
 	}
-	fs::directory_entry serach_directory(serach_directory_path);
+	fs::directory_entry search_directory(search_directory_path);
 
-	while (!serach_directory.is_directory()) {
+	while (!search_directory.is_directory()) {
 		cout << "is not a directory or no exit" << endl;
 		cout << "Scan directory:";
-		if (!getline(cin, serach_directory_path)) {
+		if (!getline(cin, search_directory_path)) {
 			return 0;
 		}
-		serach_directory.assign(serach_directory_path);
+		search_directory.assign(search_directory_path);
 	}
 	
 	//扫描目录
@@ -29,7 +29,7 @@ int main() {
 	//待访问目录栈
 	std::vector<fs::path> directories;
 
-	directories.push_back(serach_directory_path);
+	directories.push_back(search_directory_path);
 	while (!directories.empty()) {
 
 		fs::directory_iterator end;
@@ -67,7 +67,7 @@ int main() {
 	cout << "Found " << file_list.size() << " files." << endl;
 
 	//主循环
-	while (1) {
+	while (true) {
 		cout << "Search:";
 		string keyword;
 		if (!getline(cin, keyword)) {
@@ -85,14 +85,14 @@ int main() {
 			continue;
 		}
 
-		vector<FileInfo> serach_result = SearchFiles(file_list, keyword);
-		if (serach_result.empty()) {
+		vector<FileInfo> search_result = SearchFiles(file_list, keyword);
+		if (search_result.empty()) {
 			cout << "No matches found." << endl;
 		}
 		else {
-			cout << "Find " << serach_result.size() << " files." << endl;
+			cout << "Found " << search_result.size() << " files." << endl;
 		}
-		for (const FileInfo& file : serach_result) {
+		for (const FileInfo& file : search_result) {
 			cout << file.file_path << endl;
 		}
 	}
