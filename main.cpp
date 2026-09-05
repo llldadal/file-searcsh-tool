@@ -45,7 +45,8 @@ int main() {
 			while (it != end) {
 				fs::directory_entry entry = *it;
 				if (entry.is_symlink()) {
-
+					it.increment(ec);
+					continue;
 				}
 				else if (entry.is_regular_file()) {
 					file_list.push_back(GetFile(entry));
@@ -66,7 +67,14 @@ int main() {
 	
 	cout << "Found " << file_list.size() << " files." << endl;
 
-	for (FileInfo file : file_list) {
+	cout << "Serach: ";
+	string keyword;
+	if (!getline(cin, keyword)) {
+		return 0;
+	}
+	vector<FileInfo> serach_result = SearchFiles(file_list, keyword);
+	cout << "Find " << serach_result.size() << " files" << endl;
+	for (FileInfo file : serach_result) {
 		cout << file.file_name << ' ' << file.file_path << ' ' << file.file_size << endl;
 	}
 }

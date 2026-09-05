@@ -15,10 +15,10 @@ v0.1 的目标是递归扫描用户指定的目录，保存文件名、完整路
 - 使用 `std::vector<FileInfo>` 保存文件信息
 - 完成文件信息容器的基本输出测试
 - 完成递归扫描真实目录
+- 完成单次的简单文件搜索
 
 尚未完成：
 
-- 文件名关键字搜索
 - 命令行交互循环
 
 ## 开发环境
@@ -52,25 +52,8 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
 ```
 
 ## 当前测试
-### 空测试
-输入空测试目录"empyt_text"
-
-预期输出
-```
-Found 0 files.
-```
-### 普通测试
-输入测试目录"text"
-
-预期输出
-
-```
-Found 1 files.
-visible.txt "text\\readable\\visible.txt" 9
-```
-### 权限测试
-
-已通过权限测试，无崩溃，并且可以警告无权限目录
+### 搜索测试
+已完成搜索测试，无bug
 
 ### 项目结构
 ```
