@@ -20,7 +20,6 @@ v0.1 的目标是递归扫描用户指定的目录，保存文件名、完整路
 
 - 文件名关键字搜索
 - 命令行交互循环
-- 文件系统错误处理
 
 ## 开发环境
 
@@ -67,15 +66,14 @@ Found 0 files.
 
 ```
 Found 1 files.
-visible.txt 9 9
+visible.txt "text\\readable\\visible.txt" 9
 ```
 ### 权限测试
 
 已通过权限测试，无崩溃，并且可以警告无权限目录
-```
-`std::filesystem::path` 输出时可能自动在路径两侧添加引号，这是正常行为。
-```text
 
+### 项目结构
+```
 file-searcsh-tool/
 ├── main.cpp
 ├── src/
