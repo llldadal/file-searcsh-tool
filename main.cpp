@@ -44,10 +44,13 @@ int main() {
 		else {
 			while (it != end) {
 				fs::directory_entry entry = *it;
-				if (entry.is_regular_file()) {
+				if (entry.is_symlink()) {
+
+				}
+				else if (entry.is_regular_file()) {
 					file_list.push_back(GetFile(entry));
 				}
-				if (entry.is_directory() && !entry.is_symlink()) {
+				else if (entry.is_directory()) {
 					directories.push_back(entry.path());
 				}
 
