@@ -10,3 +10,5 @@ struct FileInfo {
 	std::uintmax_t file_size;
 };
 
+//获取文件
+FileInfo GetFile(std::filesystem::directory_entry entry);

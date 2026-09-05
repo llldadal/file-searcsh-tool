@@ -2,26 +2,31 @@
 #include<vector>
 #include<iostream>
 using namespace std;
-
-
+namespace fs = std::filesystem;
 
 int main() {
-	//测试
-	FileInfo f1, f2, f3;
-	f1.file_name = "text1";
-	f2.file_name = "text2";
-	f3.file_name = "text3";
-	f1.file_path = "/text1";
-	f2.file_path = "/text2";
-	f3.file_path = "/text3";
-	f1.file_size = 123;
-	f2.file_size = 1234;
-	f3.file_size = 1235;
-	vector<FileInfo> FileList;
-	FileList.push_back(f1);
-	FileList.push_back(f2);
-	FileList.push_back(f3);
-	for (FileInfo f : FileList) {
-		cout << f.file_name << " " << f.file_path << " " << f.file_size << endl;
+
+	vector<FileInfo> file_list;
+
+	fs::path serach_directory_path;
+	cout << "Scan directory:";
+	cin >> serach_directory_path;
+	fs::directory_entry serach_directory(serach_directory_path);
+	while (!serach_directory.is_directory()) {
+		cout << "is ont a directory" << endl;
+		cout << "Scan directory:";
+		cin >> serach_directory_path;
+		fs::directory_entry serach_directory(serach_directory_path);
+	}
+	
+	//扫描目录
+	for (const auto& entry : fs::recursive_directory_iterator(serach_directory_path, fs::directory_options::skip_permission_denied)) {
+		file_list.push_back(GetFile(entry));
+	}
+	
+	cout << "Found N files." << endl;
+
+	for (FileInfo file : file_list) {
+		cout << file.file_name << ' ' << file.file_size << ' ' << file.file_size << endl;
 	}
 }

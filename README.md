@@ -14,10 +14,10 @@ v0.1 的目标是递归扫描用户指定的目录，保存文件名、完整路
 - 定义 `FileInfo` 数据结构
 - 使用 `std::vector<FileInfo>` 保存文件信息
 - 完成文件信息容器的基本输出测试
+- 完成递归扫描真实目录（跳过不可访问目录）
 
 尚未完成：
 
-- 递归扫描目录
 - 文件名关键字搜索
 - 命令行交互循环
 - 文件系统错误处理
@@ -53,19 +53,30 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
 ```
 
 ## 当前测试
+### 空测试
+输入空测试目录"empyt_text"
 
-程序会创建三条模拟文件数据，将其加入 `std::vector<FileInfo>`，然后依次输出。
-
-预期输出：
-
-```text
-text1 "/text1" 123
-text2 "/text2" 1234
-text3 "/text3" 1235
+预期输出
 ```
+Found N files.
+```
+### 普通测试
+输入测试目录"test"
 
+预期输出
+
+```
+Found N files.
+readable 0 0
+visible.txt 9 9
+```
+### 权限测试
+
+已通过权限测试，无崩溃
+```
 `std::filesystem::path` 输出时可能自动在路径两侧添加引号，这是正常行为。
 ```text
+
 file-searcsh-tool/
 ├── main.cpp
 ├── src/
@@ -84,6 +95,7 @@ file-searcsh-tool/
 
 ## 已知限制
 
-当前版本只是 T1/T2 阶段的基础结构，还不能扫描真实目录或执行文件搜索。
+当前版本只是 T3 阶段的基础结构，还不能执行文件搜索。
+且无法达到提示目录无权限的功能，建议后续实现
 
 完整的 v0.1 功能将在后续任务中逐步实现。
