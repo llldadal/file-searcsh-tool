@@ -16,9 +16,6 @@ v0.1 的目标是递归扫描用户指定的目录，保存文件名、完整路
 - 完成文件信息容器的基本输出测试
 - 完成递归扫描真实目录
 - 完成单次的简单文件搜索
-
-尚未完成：
-
 - 命令行交互循环
 
 ## 开发环境
@@ -54,7 +51,7 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
 ## 当前测试
 ### 搜索测试
 测试目录：text
-关键字：csapp
+测试输入：csapp missing exit
 预期输出：
 ```
 Scan directory:text
@@ -63,6 +60,9 @@ Search:csapp
 Find 2 files.
 "text\\text3\\csapp.txt"
 "text\\readable\\csapp.docx"
+Search:missing
+No matches found.
+Search:exit
 ```
 
 
@@ -85,7 +85,4 @@ file-searcsh-tool/
 - `README.md`：项目构建和使用说明
 
 ## 已知限制
-
-当前版本只是 T3 阶段的基础结构，还不能执行文件搜索。
-
-完整的 v0.1 功能将在后续任务中逐步实现。
+v0.1已完善

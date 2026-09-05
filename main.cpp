@@ -45,7 +45,7 @@ int main() {
 			while (it != end) {
 				fs::directory_entry entry = *it;
 				if (entry.is_symlink()) {
-					
+					//跳过链接
 				}
 				else if (entry.is_regular_file()) {
 					file_list.push_back(GetFile(entry));
@@ -66,19 +66,34 @@ int main() {
 	
 	cout << "Found " << file_list.size() << " files." << endl;
 
-	cout << "Search:";
-	string keyword;
-	if (!getline(cin, keyword)) {
-		return 0;
-	}
-	vector<FileInfo> serach_result = SearchFiles(file_list, keyword);
-	if (serach_result.empty()) {
-		cout << "No matches found." << endl;
-	}
-	else {
-		cout << "Find " << serach_result.size() << " files." << endl;
-	}
-	for (const FileInfo& file : serach_result) {
-		cout <<file.file_path << endl;
+	//主循环
+	while (1) {
+		cout << "Search:";
+		string keyword;
+		if (!getline(cin, keyword)) {
+			return 0;
+		}
+
+		//退出循环
+		if (keyword == "exit") {
+			return 0;
+		}
+
+		//输入为空提示
+		if (keyword == "") {
+			cout << "Keyword cannot be empty." << endl;
+			continue;
+		}
+
+		vector<FileInfo> serach_result = SearchFiles(file_list, keyword);
+		if (serach_result.empty()) {
+			cout << "No matches found." << endl;
+		}
+		else {
+			cout << "Find " << serach_result.size() << " files." << endl;
+		}
+		for (const FileInfo& file : serach_result) {
+			cout << file.file_path << endl;
+		}
 	}
 }
