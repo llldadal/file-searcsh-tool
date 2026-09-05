@@ -10,47 +10,58 @@ int main() {
 
 	string serach_directory_path;
 	cout << "Scan directory:";
-	getline(cin, serach_directory_path);
+	if (!getline(cin, serach_directory_path)) {
+		return 0;
+	}
 	fs::directory_entry serach_directory(serach_directory_path);
+
 	while (!serach_directory.is_directory()) {
-		cout << "is ont a directory or no exit" << endl;
+		cout << "is not a directory or no exit" << endl;
 		cout << "Scan directory:";
-		getline(cin, serach_directory_path);
+		if (!getline(cin, serach_directory_path)) {
+			return 0;
+		}
 		serach_directory.assign(serach_directory_path);
 	}
 	
 	//扫描目录
 	std::error_code ec;
-	fs::recursive_directory_iterator it(serach_directory_path,ec);
-	fs::recursive_directory_iterator end;
-	while (ec) {
-		cout << "warring: " << serach_directory_path << " is not open" << endl;
-		ec.clear();
-		cout << "Scan directory:";
-		getline(cin, serach_directory_path);
-		serach_directory.assign(serach_directory_path);
-		it = fs::recursive_directory_iterator(serach_directory_path);
-	}
-	while (it != end) {
-		ec.clear();
-		//遇上无法创建迭代器的目录（无法打开）即跳过
-		if (it->is_directory()) {
-			fs::directory_iterator i(it->path(), ec);
-		}
+	//待访问目录栈
+	std::vector<fs::path> directories;
+
+	directories.push_back(serach_directory_path);
+	while (!directories.empty()) {
+
+		fs::directory_iterator end;
+
+		fs::path current_directory =directories.back();
+		directories.pop_back();
+		fs::directory_iterator it(current_directory, ec);
 		if (ec) {
-			it.disable_recursion_pending();
-			cout << "warring: " << it->path() << " is not open" << endl;
-			ec.clear();
+			cout << "warning: " << current_directory << "is not open" << endl;
+			continue;
 		}
 		else {
-			if (!(it->is_directory())) {
-				file_list.push_back(GetFile(*it));
+			while (it != end) {
+				fs::directory_entry entry = *it;
+				if (entry.is_regular_file()) {
+					file_list.push_back(GetFile(entry));
+				}
+				if (entry.is_directory()) {
+					directories.push_back(entry.path());
+				}
+
+				it.increment(ec);
+
+				if (ec) {
+					cout << "error " << ec.message() << " in " << current_directory << endl;
+					break;
+				}
 			}
 		}
-		it.increment(ec);
 	}
 	
-	cout << "Found " << file_list.size() << " Files" << endl;
+	cout << "Found " << file_list.size() << " files." << endl;
 
 	for (FileInfo file : file_list) {
 		cout << file.file_name << ' ' << file.file_path << ' ' << file.file_size << endl;
