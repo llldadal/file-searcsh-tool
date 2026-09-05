@@ -60,7 +60,7 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
 Found 0 files.
 ```
 ### 普通测试
-输入测试目录"test"
+输入测试目录"text"
 
 预期输出
 

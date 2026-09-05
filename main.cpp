@@ -38,7 +38,7 @@ int main() {
 		directories.pop_back();
 		fs::directory_iterator it(current_directory, ec);
 		if (ec) {
-			cout << "warning: " << current_directory << "is not open" << endl;
+			cout << "warning: " << current_directory << " is not open" << endl;
 			continue;
 		}
 		else {
@@ -47,7 +47,7 @@ int main() {
 				if (entry.is_regular_file()) {
 					file_list.push_back(GetFile(entry));
 				}
-				if (entry.is_directory()) {
+				if (entry.is_directory() && !entry.is_symlink()) {
 					directories.push_back(entry.path());
 				}
 
