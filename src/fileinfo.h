@@ -3,11 +3,19 @@
 #include<filesystem>
 #include <cstdint>
 #include <vector>
+#include <optional>
 //文件信息
 struct FileInfo {
 	std::string file_name;
 	std::filesystem::path file_path;
 	std::uintmax_t file_size;
+};
+
+struct FileSearch {
+	std::optional<string> keyword;
+	std::optional<string> search_extname;
+	std::optional<uintmax_t> min_size;
+	std::optional<uintmax_t> max_size;
 };
 //获取文件
 FileInfo GetFile(std::filesystem::directory_entry entry);
