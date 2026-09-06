@@ -44,7 +44,7 @@ v0.2 的目标是支持关键字、拓展名、大小的组合搜索。
 在 Visual Studio Developer PowerShell 或 Developer Command Prompt 中进入项目目录，然后执行：
 
 ```powershell
-cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
+cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp src\search.cpp /Fe:file-search.exe
 ```
 
 运行程序：
@@ -55,25 +55,19 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
 
 ## 当前测试
 ### 搜索信息结构体测试
-测试代码：
+#### 测试程序构建方法
+在 Visual Studio Developer PowerShell 或 Developer Command Prompt 中进入项目目录，然后执行：
+
+```powershell
+cl /std:c++17 /EHsc /utf-8 src\fileinfo.cpp src\search.cpp text\v0.2_text.cpp /Fe:text\v0.2_text.exe
 ```
-FileSearch s1;
-s1 = SetFileSearch("csapp", ".pdf", "100", "1000");
-s1 = SetFileSearch();
+运行程序：
 ```
-运行后可观察到s1结构体的信息先为：
+.\text\v0.2_text.exe
 ```
-keyword:csapp
-search_extfilename:.pdf
-min_size:100
-max_size:1000
+预期输出：
 ```
-然后为：
-```
-keyword:nullopt
-search_extfilename:nullopt
-min_size:nullopt
-max_size:nullopt
+All tests passed.
 ```
 
 ### 项目结构

@@ -1,6 +1,6 @@
 #include"search.h"
 #include <cinttypes>
-
+//无输入检查的解析函数，输入检查将在后续函数中加入
 FileSearch SetFileSearch(std::string keyword, std::string search_extname, std::string min_size, std::string max_size) {
 	FileSearch search;
 	if (keyword != "any") {
