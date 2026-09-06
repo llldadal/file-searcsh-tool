@@ -4,7 +4,7 @@
 
 这是一个使用 C++ 编写的命令行文件搜索工具。
 
-v0.1 的目标是递归扫描用户指定的目录，保存文件名、完整路径和文件大小，并支持按文件名关键字搜索。
+v0.2 的目标是支持关键字、拓展名、大小的组合搜索。
 
 ## 当前进度
 
@@ -17,6 +17,11 @@ v0.1 的目标是递归扫描用户指定的目录，保存文件名、完整路
 - 完成递归扫描真实目录
 - 完成单次的简单文件搜索
 - 命令行交互循环
+- 组合搜索信息的保存
+
+未完成：
+- 组合搜索信息的输入
+- 组合搜索
 
 ## 开发环境
 
@@ -49,28 +54,35 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp /Fe:file-search.exe
 ```
 
 ## 当前测试
-### 搜索测试
-测试目录：text
-测试输入：csapp missing exit
-预期输出：
+### 搜索信息结构体测试
+测试代码：
 ```
-Scan directory:text
-Found 3 files.
-Search:csapp
-Find 2 files.
-"text\\text3\\csapp.txt"
-"text\\readable\\csapp.docx"
-Search:missing
-No matches found.
-Search:exit
+FileSearch s1;
+s1 = SetFileSearch("csapp", ".pdf", "100", "1000");
+s1 = SetFileSearch();
 ```
-
+运行后可观察到s1结构体的信息先为：
+```
+keyword:csapp
+search_extfilename:.pdf
+min_size:100
+max_size:1000
+```
+然后为：
+```
+keyword:nullopt
+search_extfilename:nullopt
+min_size:nullopt
+max_size:nullopt
+```
 
 ### 项目结构
 ```
 file-searcsh-tool/
 ├── main.cpp
 ├── src/
+│   ├── search.h
+│   ├── search.cpp
 │   ├── fileinfo.h
 │   └── fileinfo.cpp
 ├── README.md
@@ -81,12 +93,15 @@ file-searcsh-tool/
 
 - `main.cpp`：程序入口和当前阶段的测试代码
 - `src/fileinfo.h`：定义文件信息结构
-- `src/fileinfo.cpp`：后续存放文件信息相关实现
+- `src/fileinfo.cpp`：存放文件信息相关实现
+- `src/search.h`：定义搜索信息结构
+- `src/search.cpp`：存放搜索信息相关实现
 - `README.md`：项目构建和使用说明
 
 ## 项目状态
 
 v0.1 核心功能已完成。
+v0.2 正在推进T1
 
 ## 已知限制
 

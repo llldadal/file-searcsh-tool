@@ -1,9 +1,14 @@
 #include"src/fileinfo.h"
+#include"src/search.h"
 #include<vector>
 #include<iostream>
 using namespace std;
 namespace fs = std::filesystem;
 int main() {
+	FileSearch s1;
+	s1 = SetFileSearch("csapp", ".pdf", "100", "1000");
+	s1 = SetFileSearch();
+	cout << "----v0.1正式部分------" << endl;
 	vector<FileInfo> file_list;
 	string search_directory_path;
 	cout << "Scan directory:";

@@ -30,9 +30,15 @@
     <ClCompile Include="src\fileinfo.cpp">
       <Filter>源文件\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\search.cpp">
+      <Filter>源文件\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\fileinfo.h">
+      <Filter>头文件\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\search.h">
       <Filter>头文件\src</Filter>
     </ClInclude>
   </ItemGroup>

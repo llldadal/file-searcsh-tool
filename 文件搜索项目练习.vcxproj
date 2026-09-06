@@ -143,9 +143,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\fileinfo.cpp" />
+    <ClCompile Include="src\search.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\fileinfo.h" />
+    <ClInclude Include="src\search.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
