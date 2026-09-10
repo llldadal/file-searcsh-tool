@@ -23,6 +23,7 @@ v0.2 的目标是支持关键字、拓展名、大小的组合搜索。
 
 未完成：
 - 组合搜索功能添加至主循环
+- 组合搜索输入错误提示（已和搜索函数解耦）
 
 ## 开发环境
 
@@ -68,31 +69,22 @@ cl /std:c++17 /EHsc /utf-8 text\v0.2_text.cpp src\fileinfo.cpp src\search.cpp /F
 ```
 预期输出：
 ```
------------text0-----------
-Found 4 files.
-"text/text_dir\\app.docx"
-"text/text_dir\\cs.pptx"
-"text/text_dir\\csapp.docx"
-"text/text_dir\\csapp.txt"
------------text1-----------
-Found 2 files.
-"text/text_dir\\csapp.docx"
-"text/text_dir\\csapp.txt"
------------text2-----------
-Found 1 files.
-"text/text_dir\\csapp.docx"
------------text3-----------
-search error
-error message: search_extname input error
-No matches found.
------------text4-----------
-search error
-error message: min_size input is not number
-No matches found.
------------text5-----------
-search error
-error message: max_size input is not number
-No matches found.
+[PASS] All unrestricted
+[PASS] Filename substring
+[PASS] Keyword case sensitivity
+[PASS] Extension filter
+[PASS] Extension case sensitivity
+[PASS] Last extension
+[PASS] Inclusive minimum
+[PASS] Inclusive maximum
+[PASS] Zero-byte range
+[PASS] Four combined conditions
+[PASS] All conditions must match
+[PASS] Literal any keyword
+[PASS] Empty input
+[PASS] Exact extension equality
+
+14/14 tests passed.
 ```
 
 ### 项目结构
@@ -106,7 +98,6 @@ file-searcsh-tool/
 │   └── fileinfo.cpp
 ├── README.md
 ├── text/
-│   ├── text_dir
 │   └── v0.2_text.cpp
 └── 文件搜索项目练习.slnx
 ```

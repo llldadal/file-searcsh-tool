@@ -27,4 +27,4 @@ bool isNumber(const std::string& s);
 
 //搜索函数
 std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const std::string& keyword);
-std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const SearchFile_return& search_file);
+std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const FileSearch& search_file);

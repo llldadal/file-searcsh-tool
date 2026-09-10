@@ -55,23 +55,18 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 	SearchFile_return re;
 	if ((!isNumber(min_size) && min_size != "any")) {
 		re.effective = false;
-		re.errror_message = "min_size input is not number";
+		re.errror_message = "min_size input is not number or a negative number";
 		return re;
 	}
 	if ((!isNumber(max_size) && max_size != "any")) {
 		re.effective = false;
-		re.errror_message = "max_size input is not number";
+		re.errror_message = "max_size input is not number or a negative number";
 		return re;
 	}
 	if (search_extname[0] != '.' && search_extname != "any") {
 		re.effective = false;
 		re.errror_message = "search_extname input error";
 		return re;
-	}
-	if (min_size != "any") {
-		if (std::strtoumax(min_size.c_str(), nullptr, 10) < 0) {
-			min_size = "0";
-		}
 	}
 	re.resulst = SetFileSearch(keyword, search_extname, min_size, max_size);
 	re.effective = true;
@@ -88,54 +83,47 @@ std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const 
 	}
 	return result;
 }
-std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const SearchFile_return& search_file) {
+std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const FileSearch& search_file) {
 	std::vector<FileInfo> result;
-	if (!search_file.effective) {
-		std::cout << "search error" << std::endl;
-		std::cout << "error message: " << search_file.errror_message << std::endl;
-		return result;
+	std::string search_bool_base = "0000";
+	if (!search_file.keyword.has_value()) {
+		search_bool_base[0] = '1';
 	}
-	else {
-		std::string search_bool_base = "0000";
-		if (!search_file.resulst.keyword.has_value()) {
-			search_bool_base[0] = '1';
-		}
-		if (!search_file.resulst.search_extname.has_value()) {
-			search_bool_base[1] = '1';
-		}
-		if (!search_file.resulst.min_size.has_value()) {
-			search_bool_base[2] = '1';
-		}
-		if (!search_file.resulst.max_size.has_value()) {
-			search_bool_base[3] = '1';
-		}
-		for (const FileInfo& file : file_list) {
-			std::string search_bool = search_bool_base;
-			if (!(search_bool[0] - '0')) {
-				if (file.file_name.find(search_file.resulst.keyword.value()) != std::string::npos) {
-					search_bool[0] = '1';
-				}
+	if (!search_file.search_extname.has_value()) {
+		search_bool_base[1] = '1';
+	}
+	if (!search_file.min_size.has_value()) {
+		search_bool_base[2] = '1';
+	}
+	if (!search_file.max_size.has_value()) {
+		search_bool_base[3] = '1';
+	}
+	for (const FileInfo& file : file_list) {
+		std::string search_bool = search_bool_base;
+		if (!(search_bool[0] - '0')) {
+			if (file.file_name.find(search_file.keyword.value()) != std::string::npos) {
+				search_bool[0] = '1';
 			}
-			if (!(search_bool[1] - '0')) {
-				if (file.file_path.extension().string().find(search_file.resulst.search_extname.value()) != std::string::npos) {
-					search_bool[1] = '1';
-				}
+		}
+		if (!(search_bool[1] - '0')) {
+			if (file.file_path.extension().string() == search_file.search_extname) {
+				search_bool[1] = '1';
 			}
-			if (!(search_bool[2] - '0')) {
-				if (file.file_size >= search_file.resulst.min_size.value()) {
-					search_bool[2] = '1';
-				}
+		}
+		if (!(search_bool[2] - '0')) {
+			if (file.file_size >= search_file.min_size.value()) {
+				search_bool[2] = '1';
 			}
-			if (!(search_bool[3] - '0')) {
-				if (file.file_size <= search_file.resulst.max_size.value()) {
-					search_bool[3] = '1';
-				}
+		}
+		if (!(search_bool[3] - '0')) {
+			if (file.file_size <= search_file.max_size.value()) {
+				search_bool[3] = '1';
 			}
+		}
 
-			if (search_bool == "1111") {
-				result.push_back(file);
-			}
+		if (search_bool == "1111") {
+			result.push_back(file);
 		}
-		return result;
 	}
+	return result;
 }
