@@ -1,30 +1,33 @@
 #include "../src/search.h"
+#include"../src/fileinfo.h"
 #include <cassert>
 #include <iostream>
 
 int main() {
-    FileSearch criteria;
+    
+    std::vector<FileInfo> file_list;
+    file_list = ScanDirectory("text/text_dir");
 
-    // 默认情况下，所有条件都未启用
-    assert(!criteria.keyword.has_value());
-    assert(!criteria.search_extname.has_value());
-    assert(!criteria.min_size.has_value());
-    assert(!criteria.max_size.has_value());
+    SearchFile_return re1 = SearchRequiedInput("any", "any", "any", "any");//不限制测试
+    SearchFile_return re2 = SearchRequiedInput("csapp", "any", "any", "any");//单限制测试
+    SearchFile_return re3 = SearchRequiedInput("csapp", ".docx", "0", "100");//多限制测试
+    SearchFile_return re4 = SearchRequiedInput("any", "ppt", "any", "any");//输入不合法测试
+    SearchFile_return re5 = SearchRequiedInput("any", "any", "abc", "any");//输入不合法测试
+    SearchFile_return re6 = SearchRequiedInput("any", "any", "any", "abc");//输入不合法测试
 
-    // 0 是有效的大小条件
-    criteria.min_size = 0;
-    assert(criteria.min_size.has_value());
-    assert(*criteria.min_size == 0);
-
-    // any 可以作为普通关键字保存
-    criteria.keyword = "any";
-    assert(*criteria.keyword == "any");
-
-    // 重置一个条件，不影响其他条件
-    criteria.min_size.reset();
-    assert(!criteria.min_size.has_value());
-    assert(criteria.keyword.has_value());
-    assert(*criteria.keyword == "any");
-
-    std::cout << "All tests passed.\n";
+    std::vector<SearchFile_return> file_reach_list = { re1,re2,re3,re4,re5,re6 };
+    for (int i = 0; i < 6; i++) {
+        std::cout << "-----------text" << i << "-----------" << std::endl;
+        std::vector<FileInfo> search_result = SearchFiles(file_list, file_reach_list[i]);
+        if (search_result.empty()) {
+            std::cout << "No matches found." << std::endl;
+        }
+        else {
+            std::cout << "Found " << search_result.size() << " files." << std::endl;
+        }
+        for (const FileInfo& file : search_result) {
+            std::cout << file.file_path << std::endl;
+        }
+    }
+    
 }

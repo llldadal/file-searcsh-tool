@@ -5,7 +5,8 @@
 using namespace std;
 namespace fs = std::filesystem;
 int main() {
-	vector<FileInfo> file_list;
+	
+	//输入解析
 	string search_directory_path;
 	cout << "Scan directory:";
 	if (!getline(cin, search_directory_path)) {
@@ -20,40 +21,10 @@ int main() {
 		}
 		search_directory.assign(search_directory_path);
 	}
-	//扫描目录
-	std::error_code ec;
-	//待访问目录栈
-	std::vector<fs::path> directories;
-	directories.push_back(search_directory_path);
-	while (!directories.empty()) {
-		fs::directory_iterator end;
-		fs::path current_directory =directories.back();
-		directories.pop_back();
-		fs::directory_iterator it(current_directory, ec);
-		if (ec) {
-			cout << "warning: " << current_directory << " is not open" << endl;
-			continue;
-		}
-		else {
-			while (it != end) {
-				fs::directory_entry entry = *it;
-				if (entry.is_symlink()) {
-					//跳过链接
-				}
-				else if (entry.is_regular_file()) {
-					file_list.push_back(GetFile(entry));
-				}
-				else if (entry.is_directory()) {
-					directories.push_back(entry.path());
-				}
-				it.increment(ec);
-				if (ec) {
-					cout << "error " << ec.message() << " in " << current_directory << endl;
-					break;
-				}
-			}
-		}
-	}
+	//目录扫描
+	vector<FileInfo> file_list;
+	file_list = ScanDirectory(search_directory_path);
+
 	cout << "Found " << file_list.size() << " files." << endl;
 	//主循环
 	while (true) {

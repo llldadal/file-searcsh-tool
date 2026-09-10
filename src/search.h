@@ -1,7 +1,9 @@
 #pragma once
+#include"fileinfo.h"
 #include <cstdint>
 #include <optional>
 #include<string>
+#include <vector>
 
 //搜索条目信息
 struct FileSearch {
@@ -11,5 +13,18 @@ struct FileSearch {
 	std::optional<uintmax_t> max_size = std::nullopt;
 };
 
+//解析结果结构体
+struct SearchFile_return {
+	FileSearch resulst;
+	bool effective = false;
+	std::string errror_message;
+};
+
 //设置搜索条目
 FileSearch SetFileSearch(std::string keyword = "any", std::string search_extname = "any", std::string min_size = "any", std::string max_size = "any");
+SearchFile_return SearchRequiedInput(std::string keyword = "any", std::string search_extname = "any", std::string min_size = "any", std::string max_size = "any");
+bool isNumber(const std::string& s);
+
+//搜索函数
+std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const std::string& keyword);
+std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const SearchFile_return& search_file);

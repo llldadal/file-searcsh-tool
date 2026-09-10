@@ -12,5 +12,6 @@ struct FileInfo {
 };
 //获取文件
 FileInfo GetFile(std::filesystem::directory_entry entry);
-//搜索文件
-std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& files,const std::string& keyword);
+//扫描目录
+std::vector<FileInfo> ScanDirectory(const std::string& search_directory_path);
+

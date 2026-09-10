@@ -18,10 +18,11 @@ v0.2 的目标是支持关键字、拓展名、大小的组合搜索。
 - 完成单次的简单文件搜索
 - 命令行交互循环
 - 组合搜索信息的保存
-
-未完成：
 - 组合搜索信息的输入
 - 组合搜索
+
+未完成：
+- 组合搜索功能添加至主循环
 
 ## 开发环境
 
@@ -59,15 +60,39 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp src\search.cpp /Fe:file-sea
 在 Visual Studio Developer PowerShell 或 Developer Command Prompt 中进入项目目录，然后执行：
 
 ```powershell
-cl /std:c++17 /EHsc /utf-8 src\fileinfo.cpp src\search.cpp text\v0.2_text.cpp /Fe:text\v0.2_text.exe
+cl /std:c++17 /EHsc /utf-8 text\v0.2_text.cpp src\fileinfo.cpp src\search.cpp /Fe:text\v0.2_T2_text.exe
 ```
 运行程序：
-```
-.\text\v0.2_text.exe
+```powershell
+.\text\v0.2_T2_text.exe
 ```
 预期输出：
 ```
-All tests passed.
+-----------text0-----------
+Found 4 files.
+"text/text_dir\\app.docx"
+"text/text_dir\\cs.pptx"
+"text/text_dir\\csapp.docx"
+"text/text_dir\\csapp.txt"
+-----------text1-----------
+Found 2 files.
+"text/text_dir\\csapp.docx"
+"text/text_dir\\csapp.txt"
+-----------text2-----------
+Found 1 files.
+"text/text_dir\\csapp.docx"
+-----------text3-----------
+search error
+error message: search_extname input error
+No matches found.
+-----------text4-----------
+search error
+error message: min_size input is not number
+No matches found.
+-----------text5-----------
+search error
+error message: max_size input is not number
+No matches found.
 ```
 
 ### 项目结构
@@ -80,6 +105,9 @@ file-searcsh-tool/
 │   ├── fileinfo.h
 │   └── fileinfo.cpp
 ├── README.md
+├── text/
+│   ├── text_dir
+│   └── v0.2_text.cpp
 └── 文件搜索项目练习.slnx
 ```
 
@@ -91,11 +119,12 @@ file-searcsh-tool/
 - `src/search.h`：定义搜索信息结构
 - `src/search.cpp`：存放搜索信息相关实现
 - `README.md`：项目构建和使用说明
+- `text`:测试文件
 
 ## 项目状态
 
 v0.1 核心功能已完成。
-v0.2 正在推进T1
+v0.2 正在推进T3
 
 ## 已知限制
 
