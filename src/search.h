@@ -22,9 +22,13 @@ struct SearchFile_return {
 
 //设置搜索条目
 FileSearch SetFileSearch(std::string keyword = "any", std::string search_extname = "any", std::string min_size = "any", std::string max_size = "any");
+//解析用户输入
 SearchFile_return SearchRequiedInput(std::string keyword = "any", std::string search_extname = "any", std::string min_size = "any", std::string max_size = "any");
-bool isNumber(const std::string& s);
-
+bool isNumber(std::string& s);
+bool RemoveQuotationMarks(std::string& s);
+bool strNuberCompare(const std::string& s1, const std::string& s2);
+//错误解析函数
+bool ErrorAnalysis(const SearchFile_return& re);
 //搜索函数
 std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const std::string& keyword);
 std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const FileSearch& search_file);

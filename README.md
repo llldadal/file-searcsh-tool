@@ -19,11 +19,11 @@ v0.2 的目标是支持关键字、拓展名、大小的组合搜索。
 - 命令行交互循环
 - 组合搜索信息的保存
 - 组合搜索信息的输入
+- 组合搜索信息的解析，包括识别引号、判断数字是否溢出等
 - 组合搜索
 
 未完成：
 - 组合搜索功能添加至主循环
-- 组合搜索输入错误提示（已和搜索函数解耦）
 
 ## 开发环境
 
@@ -56,38 +56,23 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp src\search.cpp /Fe:file-sea
 ```
 
 ## 当前测试
-### 搜索信息结构体测试
+### 搜索信息解析测试
 #### 测试程序构建方法
 在 Visual Studio Developer PowerShell 或 Developer Command Prompt 中进入项目目录，然后执行：
 
 ```powershell
-cl /std:c++17 /EHsc /utf-8 text\v0.2_text.cpp src\fileinfo.cpp src\search.cpp /Fe:text\v0.2_T2_text.exe
+cl /std:c++17 /EHsc /utf-8 text\v0.2_text.cpp src\fileinfo.cpp src\search.cpp /Fe:text\v0.2_T3_text.exe
 ```
 运行程序：
 ```powershell
-.\text\v0.2_T2_text.exe
+.\text\v0.2_T3_text.exe
 ```
-预期输出：
+预期输出(省略PASS输出)：
 ```
-[PASS] All unrestricted
-[PASS] Filename substring
-[PASS] Keyword case sensitivity
-[PASS] Extension filter
-[PASS] Extension case sensitivity
-[PASS] Last extension
-[PASS] Inclusive minimum
-[PASS] Inclusive maximum
-[PASS] Zero-byte range
-[PASS] Four combined conditions
-[PASS] All conditions must match
-[PASS] Literal any keyword
-[PASS] Empty input
-[PASS] Exact extension equality
-
-14/14 tests passed.
+100/100 tests passed.
 ```
 
-### 项目结构
+## 项目结构
 ```
 file-searcsh-tool/
 ├── main.cpp
@@ -115,7 +100,7 @@ file-searcsh-tool/
 ## 项目状态
 
 v0.1 核心功能已完成。
-v0.2 正在推进T3
+v0.2 正在推进T4
 
 ## 已知限制
 

@@ -2,8 +2,35 @@
 #include"fileinfo.h"
 #include <cinttypes>
 #include <iostream>
-//检查是否为数字
-bool isNumber(const std::string& s) {
+std::string MAX_SIZE = "18446744073709551615";
+//引号处理函数
+bool RemoveQuotationMarks(std::string& s) {
+	std::string re_s = "";
+	int l = s.length();
+	if (s == "\"") {
+		return false;
+	}
+	if (s[0] == '\"' && s[l - 1] != '\"') {
+		return false;
+	}
+	if (s[0] != '\"' && s[l - 1] == '\"') {
+		return false;
+	}
+	if (s[0] == '\"' && s[l - 1] == '\"') {
+		for (int i = 1; i < l - 1; i++) {
+			re_s += s[i];
+		}
+		if (re_s != "any") {
+			s = re_s;
+		}
+		return true;
+	}
+	return true;
+}
+//检查去除前导零后是否为数字
+bool isNumber(std::string& s) {
+	std::string re_s = "";
+	bool leading_zero = true;
 	if (s.empty()) {
 		return false;
 	}
@@ -11,14 +38,34 @@ bool isNumber(const std::string& s) {
 		if (c < '0' || c>'9') {
 			return false;
 		}
+		if (c != '0') {
+			leading_zero = false;
+		}
+		if (!leading_zero) {
+			re_s += c;
+		}
 	}
+	s = re_s;
 	return true;
 }
-//无输入检查的解析函数，输入检查将在后续函数中加入
+bool strNuberCompare(const std::string& s1, const std::string& s2) {
+	int l1 = s1.length();
+	int l2 = s2.length();
+	if (l1 > l2) {
+		return true;
+	}
+	else if (l1 < l2) {
+		return false;
+	}
+	else {
+		return s1 > s2;
+	}
+}
+//无输入检查的输入函数
 FileSearch SetFileSearch(std::string keyword, std::string search_extname, std::string min_size, std::string max_size) {
 	FileSearch search;
 	if (keyword != "any") {
-		if (keyword == "\"any\"" || keyword == "\'any\'") {
+		if (keyword == "\"any\"") {
 			search.keyword = "any";
 		}
 		else {
@@ -26,7 +73,7 @@ FileSearch SetFileSearch(std::string keyword, std::string search_extname, std::s
 		}
 	}
 	if (search_extname != "any") {
-		if (search_extname == "\"any\"" || search_extname == "\'any\'") {
+		if (search_extname == "\"any\"") {
 			search.search_extname = "any";
 		}
 		else {
@@ -34,7 +81,7 @@ FileSearch SetFileSearch(std::string keyword, std::string search_extname, std::s
 		}
 	}
 	if (min_size != "any") {
-		if (min_size == "\"any\"" || min_size == "\'any\'") {
+		if (min_size == "\"any\"") {
 			search.min_size = std::nullopt;
 		}
 		else {
@@ -42,7 +89,7 @@ FileSearch SetFileSearch(std::string keyword, std::string search_extname, std::s
 		}
 	}
 	if (max_size != "any") {
-		if (max_size == "\"any\"" || max_size == "\'any\'") {
+		if (max_size == "\"any\"") {
 			search.max_size = std::nullopt;
 		}
 		else {
@@ -51,16 +98,32 @@ FileSearch SetFileSearch(std::string keyword, std::string search_extname, std::s
 	}
 	return search;
 }
+//解析函数
 SearchFile_return SearchRequiedInput(std::string keyword, std::string search_extname, std::string min_size, std::string max_size) {
 	SearchFile_return re;
-	if ((!isNumber(min_size) && min_size != "any")) {
+	//keyword
+	//空输入处理
+	if (keyword.empty() || keyword == "\"\"") {
 		re.effective = false;
-		re.errror_message = "min_size input is not number or a negative number";
+		re.errror_message = "keyword is empty";
 		return re;
 	}
-	if ((!isNumber(max_size) && max_size != "any")) {
+	//引号处理
+	if (!RemoveQuotationMarks(keyword)) {
 		re.effective = false;
-		re.errror_message = "max_size input is not number or a negative number";
+		re.errror_message = "keyword input's qoutes is incomplete";
+		return re;
+	}
+
+	//search_extname
+	if (search_extname.empty() || search_extname == "" || search_extname == ".") {
+		re.effective = false;
+		re.errror_message = "search_extname is empty";
+		return re;
+	}
+	if (!RemoveQuotationMarks(search_extname)) {
+		re.effective = false;
+		re.errror_message = "search_extname input's qoutes is incomplete";
 		return re;
 	}
 	if (search_extname[0] != '.' && search_extname != "any") {
@@ -68,11 +131,65 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 		re.errror_message = "search_extname input error";
 		return re;
 	}
+	if ((search_extname.find('/') != std::string::npos || search_extname.find('\\') != std::string::npos) && search_extname != "any") {
+		re.effective = false;
+		re.errror_message = "search_extname has / or \\";
+		return re;
+	}
+
+	//min_size
+	if (min_size.empty() || min_size == "") {
+		re.effective = false;
+		re.errror_message = "min_size is empty";
+		return re;
+	}
+	if ((!isNumber(min_size) && min_size != "any")) {
+		re.effective = false;
+		re.errror_message = "min_size input is not number or not a postive int";
+		return re;
+	}
+	if ((strNuberCompare(min_size, MAX_SIZE) && min_size != "any")) {
+		re.effective = false;
+		re.errror_message = "min_size input is upper than MAX_SIZE";
+		return re;
+	}
+
+	//max_size
+	if (max_size.empty() || max_size == "") {
+		re.effective = false;
+		re.errror_message = "max_size is empty";
+		return re;
+	}
+	if ((!isNumber(max_size) && max_size != "any")) {
+		re.effective = false;
+		re.errror_message = "max_size input is not number or not a postive int";
+		return re;
+	}
+	if ((strNuberCompare(max_size, MAX_SIZE) && max_size != "any")) {
+		re.effective = false;
+		re.errror_message = "max_size input is upper than MAX_SIZE";
+		return re;
+	}
+	if ((strNuberCompare(min_size, max_size) && max_size != "any" && min_size != "any")) {
+		re.effective = false;
+		re.errror_message = "min_size input is upper than max_size";
+		return re;
+	}
+
 	re.resulst = SetFileSearch(keyword, search_extname, min_size, max_size);
 	re.effective = true;
 	return re;
 }
-
+//错误解析函数
+bool ErrorAnalysis(const SearchFile_return& re) {
+	if (re.effective) {
+		return true;
+	}
+	else {
+		std::cout << "Error:" << re.errror_message << std::endl;
+		return false;
+	}
+}
 //搜索函数
 std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const std::string& keyword) {
 	std::vector<FileInfo> result;
