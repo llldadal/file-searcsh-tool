@@ -334,7 +334,7 @@ int main() {
     }
 
     for (const auto& input : std::vector<std::string>{
-            "pdf", ".", "", "\"\"", "\"any\"", "'.pdf'",
+            "pdf", ".", "\".\"", "", "\"\"", "\"any\"", "'.pdf'",
             "\".pdf", ".pdf\"", ".pdf/notes", ".pdf\\notes", " .pdf"
         }) {
         checkFailure(runner, "invalid extension: " + input, "any", input, "any", "any",

@@ -2,7 +2,7 @@
 #include"fileinfo.h"
 #include <cinttypes>
 #include <iostream>
-std::string MAX_SIZE = "18446744073709551615";
+const std::string MAX_SIZE = std::to_string(std::numeric_limits<std::uintmax_t>::max());;
 //引号处理函数
 bool RemoveQuotationMarks(std::string& s) {
 	std::string re_s = "";
@@ -44,6 +44,9 @@ bool isNumber(std::string& s) {
 		if (!leading_zero) {
 			re_s += c;
 		}
+	}
+	if (re_s.empty()) {
+		re_s = "0";
 	}
 	s = re_s;
 	return true;
@@ -116,7 +119,7 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 	}
 
 	//search_extname
-	if (search_extname.empty() || search_extname == "" || search_extname == ".") {
+	if (search_extname.empty() || search_extname == "" || search_extname == "." || search_extname == "\".\"") {
 		re.effective = false;
 		re.errror_message = "search_extname is empty";
 		return re;
@@ -138,7 +141,7 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 	}
 
 	//min_size
-	if (min_size.empty() || min_size == "") {
+	if (min_size.empty() || min_size == "\"\"") {
 		re.effective = false;
 		re.errror_message = "min_size is empty";
 		return re;
@@ -155,7 +158,7 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 	}
 
 	//max_size
-	if (max_size.empty() || max_size == "") {
+	if (max_size.empty() || max_size == "\"\"") {
 		re.effective = false;
 		re.errror_message = "max_size is empty";
 		return re;
