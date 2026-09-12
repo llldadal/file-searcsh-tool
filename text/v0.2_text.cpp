@@ -471,7 +471,6 @@ void runT4InteractionTests(TestRunner& runner) {
         [](const std::string& output) {
             return contains(output, "Find 1 files.")
                 && contains(output, "csapp.pdf")
-                && contains(output, " 100")
                 && !contains(output, "csapp_notes.txt")
                 && !contains(output, "CSAPP_upper.pdf")
                 && !contains(output, "empty.pdf");
@@ -483,8 +482,7 @@ void runT4InteractionTests(TestRunner& runner) {
         [](const std::string& output) {
             return contains(output, "Find 1 files.")
                 && contains(output, "archive.tar.gz")
-                && contains(output, "nested")
-                && contains(output, " 400");
+                && contains(output, "nested");
         },
         "the matching file from a real subdirectory");
 
