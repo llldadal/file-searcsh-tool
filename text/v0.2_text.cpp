@@ -1,15 +1,23 @@
 #include "../src/search.h"
 
 #include <algorithm>
+#include <chrono>
 #include <cctype>
 #include <cstdint>
+#include <filesystem>
+#include <fstream>
 #include <initializer_list>
 #include <iostream>
 #include <limits>
 #include <optional>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
+
+#define main runFileSearchProgram
+#include "../main.cpp"
+#undef main
 
 namespace {
 
@@ -224,6 +232,365 @@ bool sameCriteria(const FileSearch& left, const FileSearch& right) {
         && left.max_size == right.max_size;
 }
 
+std::size_t occurrenceCount(const std::string& text, const std::string& part) {
+    if (part.empty()) {
+        return 0;
+    }
+
+    std::size_t count = 0;
+    std::size_t position = 0;
+    while ((position = text.find(part, position)) != std::string::npos) {
+        ++count;
+        position += part.size();
+    }
+    return count;
+}
+
+bool appearsBefore(const std::string& text, const std::string& first,
+    const std::string& second) {
+    const std::size_t first_position = text.find(first);
+    const std::size_t second_position = text.find(second);
+    return first_position != std::string::npos
+        && second_position != std::string::npos
+        && first_position < second_position;
+}
+
+class RealFileFixture {
+public:
+    RealFileFixture() {
+        const auto suffix = std::chrono::steady_clock::now().time_since_epoch().count();
+        path_ = std::filesystem::temp_directory_path()
+            / ("file_search_t4_test_" + std::to_string(suffix));
+        std::filesystem::create_directory(path_);
+        std::filesystem::create_directory(path_ / "nested");
+
+        createFile("csapp.pdf", 100, 'A');
+        createFile("csapp_notes.txt", 200, 'B');
+        createFile("CSAPP_upper.pdf", 300, 'C');
+        createFile(std::filesystem::path("nested") / "archive.tar.gz", 400, 'D');
+        createFile(std::filesystem::path("nested") / "empty.pdf", 0, 'E');
+        createFile("any.txt", 250, 'F');
+    }
+
+    ~RealFileFixture() {
+        std::error_code error;
+        std::filesystem::remove_all(path_, error);
+    }
+
+    std::string text() const {
+        return path_.string();
+    }
+
+private:
+    void createFile(const std::filesystem::path& relative_path,
+        std::size_t size, char contents) {
+        std::ofstream file(path_ / relative_path, std::ios::binary);
+        file << std::string(size, contents);
+    }
+
+    std::filesystem::path path_;
+};
+
+std::string runInteraction(const std::vector<std::string>& lines) {
+    std::ostringstream input_text;
+    for (const auto& line : lines) {
+        input_text << line << '\n';
+    }
+
+    std::istringstream input(input_text.str());
+    std::ostringstream output;
+    std::streambuf* const original_input = std::cin.rdbuf(input.rdbuf());
+    std::streambuf* const original_output = std::cout.rdbuf(output.rdbuf());
+    const std::ios::iostate original_input_state = std::cin.rdstate();
+    std::cin.clear();
+
+    try {
+        runFileSearchProgram();
+    }
+    catch (...) {
+        std::cin.rdbuf(original_input);
+        std::cout.rdbuf(original_output);
+        std::cin.clear(original_input_state);
+        throw;
+    }
+
+    std::cin.rdbuf(original_input);
+    std::cout.rdbuf(original_output);
+    std::cin.clear(original_input_state);
+    return output.str();
+}
+
+void runT4InteractionTests(TestRunner& runner) {
+    RealFileFixture directory;
+    const std::string root = directory.text();
+
+    auto checkOutput = [&](const std::string& name, const std::vector<std::string>& input,
+        const auto& predicate, const std::string& expectation) {
+        const std::string output = runInteraction(input);
+        runner.check("T4 interaction: " + name, predicate(output),
+            "expected " + expectation + "; output: " + output);
+    };
+
+    checkOutput("valid query executes once",
+        { root, "csapp", ".pdf", "100", "300", "exit" },
+        [](const std::string& output) {
+            return occurrenceCount(output, "Find 1 files.") == 1
+                && contains(output, "csapp.pdf")
+                && occurrenceCount(output, "keyword: ") == 2
+                && !contains(output, "again:")
+                && !contains(output, "Error:");
+        },
+        "one completed search followed by a clean exit");
+
+    checkOutput("validation starts after all four initial fields",
+        { root, "", "pdf", "abc", "-1", "csapp", ".pdf", "100", "300", "exit" },
+        [](const std::string& output) {
+            return appearsBefore(output, "max_size: ", "input keyword again: ")
+                && appearsBefore(output, "input keyword again: ", "intput search_extname again: ")
+                && appearsBefore(output, "intput search_extname again: ", "input min_size again: ")
+                && appearsBefore(output, "input min_size again: ", "input max_size again: ")
+                && occurrenceCount(output, "Find 1 files.") == 1
+                && contains(output, "csapp.pdf");
+        },
+        "all initial prompts, then retries in keyword/extension/minimum/maximum order");
+
+    checkOutput("keyword error retries only keyword",
+        { root, "", ".pdf", "100", "300", "csapp", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Error:keyword")
+                && occurrenceCount(output, "input keyword again: ") == 1
+                && !contains(output, "intput search_extname again:")
+                && !contains(output, "input min_size again:")
+                && !contains(output, "input max_size again:")
+                && occurrenceCount(output, "Find 1 files.") == 1
+                && contains(output, "csapp.pdf");
+        },
+        "an error reason and only the keyword retry prompt");
+
+    checkOutput("extension error retries only extension",
+        { root, "csapp", "pdf", "100", "300", ".pdf", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Error:search_extname")
+                && occurrenceCount(output, "intput search_extname again: ") == 1
+                && !contains(output, "input keyword again:")
+                && !contains(output, "input min_size again:")
+                && !contains(output, "input max_size again:")
+                && occurrenceCount(output, "Find 1 files.") == 1
+                && contains(output, "csapp.pdf");
+        },
+        "an error reason and only the extension retry prompt");
+
+    checkOutput("minimum error retries only minimum",
+        { root, "csapp", ".pdf", "abc", "300", "100", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Error:min_size")
+                && occurrenceCount(output, "input min_size again: ") == 1
+                && !contains(output, "input keyword again:")
+                && !contains(output, "intput search_extname again:")
+                && !contains(output, "input max_size again:")
+                && occurrenceCount(output, "Find 1 files.") == 1
+                && contains(output, "csapp.pdf");
+        },
+        "an error reason and only the minimum-size retry prompt");
+
+    checkOutput("maximum error retries only maximum",
+        { root, "csapp", ".pdf", "100", "abc", "300", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Error:max_size")
+                && occurrenceCount(output, "input max_size again: ") == 1
+                && !contains(output, "input keyword again:")
+                && !contains(output, "intput search_extname again:")
+                && !contains(output, "input min_size again:")
+                && occurrenceCount(output, "Find 1 files.") == 1
+                && contains(output, "csapp.pdf");
+        },
+        "an error reason and only the maximum-size retry prompt");
+
+    checkOutput("invalid range retries maximum",
+        { root, "any", ".pdf", "300", "100", "300", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Error:min_size input is upper than max_size")
+                && occurrenceCount(output, "input max_size again: ") == 1
+                && !contains(output, "input min_size again:")
+                && occurrenceCount(output, "Find 1 files.") == 1
+                && contains(output, "CSAPP_upper.pdf");
+        },
+        "the range reason and a maximum-size retry");
+
+    checkOutput("real files unrestricted search",
+        { root, "any", "any", "any", "any", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Found 6 files.")
+                && contains(output, "Find 6 files.")
+                && contains(output, "csapp.pdf")
+                && contains(output, "csapp_notes.txt")
+                && contains(output, "CSAPP_upper.pdf")
+                && contains(output, "archive.tar.gz")
+                && contains(output, "empty.pdf")
+                && contains(output, "any.txt");
+        },
+        "six real files to be scanned and returned");
+
+    checkOutput("real files keyword filter",
+        { root, "csapp", "any", "any", "any", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Find 2 files.")
+                && contains(output, "csapp.pdf")
+                && contains(output, "csapp_notes.txt")
+                && !contains(output, "CSAPP_upper.pdf");
+        },
+        "the two case-sensitive keyword matches");
+
+    checkOutput("real files extension filter",
+        { root, "any", ".pdf", "any", "any", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Find 3 files.")
+                && contains(output, "csapp.pdf")
+                && contains(output, "CSAPP_upper.pdf")
+                && contains(output, "empty.pdf")
+                && !contains(output, "csapp_notes.txt")
+                && !contains(output, "archive.tar.gz");
+        },
+        "the three real PDF files");
+
+    checkOutput("real files inclusive size range",
+        { root, "any", "any", "100", "250", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Find 3 files.")
+                && contains(output, "csapp.pdf")
+                && contains(output, "csapp_notes.txt")
+                && contains(output, "any.txt")
+                && !contains(output, "CSAPP_upper.pdf")
+                && !contains(output, "empty.pdf")
+                && !contains(output, "archive.tar.gz");
+        },
+        "the real files whose byte sizes are between 100 and 250 inclusive");
+
+    checkOutput("real files combined filters",
+        { root, "csapp", ".pdf", "100", "100", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Find 1 files.")
+                && contains(output, "csapp.pdf")
+                && contains(output, " 100")
+                && !contains(output, "csapp_notes.txt")
+                && !contains(output, "CSAPP_upper.pdf")
+                && !contains(output, "empty.pdf");
+        },
+        "one real file satisfying all four conditions");
+
+    checkOutput("real nested file search",
+        { root, "archive", ".gz", "400", "400", "exit" },
+        [](const std::string& output) {
+            return contains(output, "Find 1 files.")
+                && contains(output, "archive.tar.gz")
+                && contains(output, "nested")
+                && contains(output, " 400");
+        },
+        "the matching file from a real subdirectory");
+
+    checkOutput("real files no match",
+        { root, "missing", ".pdf", "any", "any", "exit" },
+        [](const std::string& output) {
+            return occurrenceCount(output, "No matches found.") == 1
+                && !contains(output, "Find 1 files.");
+        },
+        "a completed real search with no matching file");
+
+    checkOutput("exit at initial keyword ends immediately", { root, "exit" },
+        [](const std::string& output) {
+            return contains(output, "keyword: ")
+                && !contains(output, "search_extname: ")
+                && !contains(output, "No matches found.");
+        },
+        "no extension prompt and no search result");
+
+    checkOutput("exit at keyword retry ends immediately",
+        { root, "", ".pdf", "100", "300", "exit" },
+        [](const std::string& output) {
+            return contains(output, "input keyword again: ")
+                && !contains(output, "No matches found.");
+        },
+        "the keyword retry prompt and no search result");
+
+    checkOutput("EOF at directory", {},
+        [](const std::string& output) {
+            return occurrenceCount(output, "Scan directory:") == 1
+                && !contains(output, "Found ")
+                && !contains(output, "Search:");
+        },
+        "an immediate stop at the first read");
+
+    const std::string regular_file = std::filesystem::absolute(__FILE__).string();
+    checkOutput("EOF while retrying directory", { regular_file },
+        [](const std::string& output) {
+            return occurrenceCount(output, "Scan directory:") == 2
+                && contains(output, "is not a directory or no exit")
+                && !contains(output, "Found ");
+        },
+        "one directory retry and then an immediate stop");
+
+    checkOutput("EOF at initial keyword", { root },
+        [](const std::string& output) {
+            return contains(output, "keyword: ")
+                && !contains(output, "search_extname: ")
+                && !contains(output, "No matches found.");
+        },
+        "a stop before reading the extension");
+
+    checkOutput("EOF at initial extension", { root, "csapp" },
+        [](const std::string& output) {
+            return contains(output, "search_extname: ")
+                && !contains(output, "min_size: ")
+                && !contains(output, "No matches found.");
+        },
+        "a stop before reading the minimum size");
+
+    checkOutput("EOF at initial minimum", { root, "csapp", ".pdf" },
+        [](const std::string& output) {
+            return contains(output, "min_size: ")
+                && !contains(output, "max_size: ")
+                && !contains(output, "No matches found.");
+        },
+        "a stop before reading the maximum size");
+
+    checkOutput("EOF at initial maximum", { root, "csapp", ".pdf", "100" },
+        [](const std::string& output) {
+            return contains(output, "max_size: ")
+                && !contains(output, "Error:")
+                && !contains(output, "again:")
+                && !contains(output, "No matches found.");
+        },
+        "a stop before validation or search");
+
+    checkOutput("EOF at keyword retry", { root, "", ".pdf", "100", "300" },
+        [](const std::string& output) {
+            return contains(output, "input keyword again: ")
+                && !contains(output, "No matches found.");
+        },
+        "a stop at the keyword retry");
+
+    checkOutput("EOF at extension retry", { root, "csapp", "pdf", "100", "300" },
+        [](const std::string& output) {
+            return contains(output, "intput search_extname again: ")
+                && !contains(output, "No matches found.");
+        },
+        "a stop at the extension retry");
+
+    checkOutput("EOF at minimum retry", { root, "csapp", ".pdf", "abc", "300" },
+        [](const std::string& output) {
+            return contains(output, "input min_size again: ")
+                && !contains(output, "No matches found.");
+        },
+        "a stop at the minimum-size retry");
+
+    checkOutput("EOF at maximum retry", { root, "csapp", ".pdf", "100", "abc" },
+        [](const std::string& output) {
+            return contains(output, "input max_size again: ")
+                && !contains(output, "No matches found.");
+        },
+        "a stop at the maximum-size retry");
+}
+
 void runT2RegressionTests(TestRunner& runner) {
     const std::vector<FileInfo> fixtures = {
         { "csapp.pdf",       "/books/csapp.pdf",       100 },
@@ -416,6 +783,7 @@ int main() {
     checkSuccessResult(runner, "sequence success after failure", sequence_success_2, FileSearch{});
 
     runT2RegressionTests(runner);
+    runT4InteractionTests(runner);
 
     std::cout << '\n' << runner.total - runner.failed << '/' << runner.total << " tests passed.\n";
     return runner.failed == 0 ? 0 : 1;

@@ -2,6 +2,7 @@
 #include"fileinfo.h"
 #include <cinttypes>
 #include <iostream>
+#include <limits>
 const std::string MAX_SIZE = std::to_string(std::numeric_limits<std::uintmax_t>::max());;
 //引号处理函数
 bool RemoveQuotationMarks(std::string& s) {
@@ -109,12 +110,14 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 	if (keyword.empty() || keyword == "\"\"") {
 		re.effective = false;
 		re.errror_message = "keyword is empty";
+		re.error_type = 1;
 		return re;
 	}
 	//引号处理
 	if (!RemoveQuotationMarks(keyword)) {
 		re.effective = false;
 		re.errror_message = "keyword input's qoutes is incomplete";
+		re.error_type = 1;
 		return re;
 	}
 
@@ -122,21 +125,25 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 	if (search_extname.empty() || search_extname == "" || search_extname == "." || search_extname == "\".\"") {
 		re.effective = false;
 		re.errror_message = "search_extname is empty";
+		re.error_type = 2;
 		return re;
 	}
 	if (!RemoveQuotationMarks(search_extname)) {
 		re.effective = false;
 		re.errror_message = "search_extname input's qoutes is incomplete";
+		re.error_type = 2;
 		return re;
 	}
 	if (search_extname[0] != '.' && search_extname != "any") {
 		re.effective = false;
 		re.errror_message = "search_extname input error";
+		re.error_type = 2;
 		return re;
 	}
 	if ((search_extname.find('/') != std::string::npos || search_extname.find('\\') != std::string::npos) && search_extname != "any") {
 		re.effective = false;
 		re.errror_message = "search_extname has / or \\";
+		re.error_type = 2;
 		return re;
 	}
 
@@ -144,16 +151,19 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 	if (min_size.empty() || min_size == "\"\"") {
 		re.effective = false;
 		re.errror_message = "min_size is empty";
+		re.error_type = 3;
 		return re;
 	}
 	if ((!isNumber(min_size) && min_size != "any")) {
 		re.effective = false;
 		re.errror_message = "min_size input is not number or not a postive int";
+		re.error_type = 3;
 		return re;
 	}
 	if ((strNuberCompare(min_size, MAX_SIZE) && min_size != "any")) {
 		re.effective = false;
 		re.errror_message = "min_size input is upper than MAX_SIZE";
+		re.error_type = 3;
 		return re;
 	}
 
@@ -161,21 +171,25 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 	if (max_size.empty() || max_size == "\"\"") {
 		re.effective = false;
 		re.errror_message = "max_size is empty";
+		re.error_type = 4;
 		return re;
 	}
 	if ((!isNumber(max_size) && max_size != "any")) {
 		re.effective = false;
 		re.errror_message = "max_size input is not number or not a postive int";
+		re.error_type = 4;
 		return re;
 	}
 	if ((strNuberCompare(max_size, MAX_SIZE) && max_size != "any")) {
 		re.effective = false;
 		re.errror_message = "max_size input is upper than MAX_SIZE";
+		re.error_type = 4;
 		return re;
 	}
 	if ((strNuberCompare(min_size, max_size) && max_size != "any" && min_size != "any")) {
 		re.effective = false;
 		re.errror_message = "min_size input is upper than max_size";
+		re.error_type = 4;
 		return re;
 	}
 
@@ -184,13 +198,13 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 	return re;
 }
 //错误解析函数
-bool ErrorAnalysis(const SearchFile_return& re) {
+int ErrorAnalysis(const SearchFile_return& re) {
 	if (re.effective) {
-		return true;
+		return 0;
 	}
 	else {
 		std::cout << "Error:" << re.errror_message << std::endl;
-		return false;
+		return re.error_type;
 	}
 }
 //搜索函数

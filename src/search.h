@@ -18,6 +18,7 @@ struct SearchFile_return {
 	FileSearch resulst;
 	bool effective = false;
 	std::string errror_message;
+	int error_type = 0;//表示第error_type个字段输入错误
 };
 
 //设置搜索条目
@@ -28,7 +29,7 @@ bool isNumber(std::string& s);
 bool RemoveQuotationMarks(std::string& s);
 bool strNuberCompare(const std::string& s1, const std::string& s2);
 //错误解析函数
-bool ErrorAnalysis(const SearchFile_return& re);
+int ErrorAnalysis(const SearchFile_return& re);
 //搜索函数
 std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const std::string& keyword);
 std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const FileSearch& search_file);

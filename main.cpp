@@ -28,7 +28,9 @@ int main() {
 	cout << "Found " << file_list.size() << " files." << endl;
 	//主循环
 	while (true) {
-		cout << "Search:";
+		cout << "Search:" << endl;
+		//keyword 输入
+		cout << "keyword: ";
 		string keyword;
 		if (!getline(cin, keyword)) {
 			return 0;
@@ -37,20 +39,102 @@ int main() {
 		if (keyword == "exit") {
 			return 0;
 		}
-		//输入为空提示
-		if (keyword == "") {
-			cout << "Keyword cannot be empty." << endl;
-			continue;
+		cout << endl;
+
+		//search_extname 输入
+		cout << "search_extname: ";
+		string search_extname;
+		if (!getline(cin, search_extname)) {
+			return 0;
 		}
-		vector<FileInfo> search_result = SearchFiles(file_list, keyword);
-		if (search_result.empty()) {
+		cout << endl;
+
+		//min_size 输入
+		cout << "min_size: ";
+		string min_size;
+		if (!getline(cin, min_size)) {
+			return 0;
+		}
+		cout << endl;
+
+		//max_size 输入
+		cout << "max_size: ";
+		string max_size;
+		if (!getline(cin, max_size)) {
+			return 0;
+		}
+		cout << endl;
+
+		//输入解析
+		SearchFile_return  re = SearchRequiedInput(keyword, search_extname, min_size, max_size);
+		int error_type = ErrorAnalysis(re);
+		while(error_type) {
+			switch (error_type) {
+			case 1: {
+				//keyword 输入
+				cout << "input keyword again: ";
+				string keyword_again;
+				if (!getline(cin, keyword_again)) {
+					return 0;
+				}
+				//退出循环
+				if (keyword_again == "exit") {
+					return 0;
+				}
+				keyword = keyword_again;
+				cout << endl;
+				break;
+			}
+				
+			case 2: {
+				//search_extname 输入
+				cout << "intput search_extname again: ";
+				string search_extname_again;
+				if (!getline(cin, search_extname_again)) {
+					return 0;
+				}
+				search_extname = search_extname_again;
+				cout << endl;
+				break;
+			}
+
+			case 3: {
+				//min_size 输入
+				cout << "input min_size again: ";
+				string min_size_again;
+				if (!getline(cin, min_size_again)) {
+					return 0;
+				}
+				min_size = min_size_again;
+				cout << endl;
+				break;
+			}
+
+			case 4: {
+				//max_size 输入
+				cout << "input max_size again: ";
+				string max_size_again;
+				if (!getline(cin, max_size_again)) {
+					return 0;
+				}
+				max_size = max_size_again;
+				cout << endl;
+				break;
+			}
+			}
+			re = SearchRequiedInput(keyword, search_extname, min_size, max_size);
+			error_type = ErrorAnalysis(re);
+		}
+
+		vector<FileInfo> files = SearchFiles(file_list, re.resulst);
+		if (files.empty()) {
 			cout << "No matches found." << endl;
 		}
 		else {
-			cout << "Found " << search_result.size() << " files." << endl;
+			cout << "Find " << files.size() << " files." << endl;
 		}
-		for (const FileInfo& file : search_result) {
-			cout << file.file_path << endl;
+		for (const FileInfo& file : files) {
+			cout << file.file_name << ' ' << file.file_path << ' ' << file.file_size << endl;
 		}
 	}
 }
