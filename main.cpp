@@ -26,6 +26,11 @@ int main() {
 	file_list = ScanDirectory(search_directory_path);
 
 	cout << "Found " << file_list.size() << " files." << endl;
+
+	cout << endl;
+	cout << "Enter any to leave a condition unrestricted.\nSizes are in bytes.\nEnter exit at the keyword prompt to quit.\nUse double quotes for literal text, e.g. \"any\" or \"exit\"." << endl;
+	cout << endl;
+
 	//主循环
 	while (true) {
 		cout << "Search:" << endl;
@@ -134,7 +139,7 @@ int main() {
 			cout << "Find " << files.size() << " files." << endl;
 		}
 		for (const FileInfo& file : files) {
-			cout << file.file_name << ' ' << file.file_path << ' ' << file.file_size << endl;
+			cout <<file.file_path<< endl;
 		}
 	}
 }

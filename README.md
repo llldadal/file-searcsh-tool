@@ -69,7 +69,52 @@ cl /std:c++17 /EHsc /utf-8 text\v0.2_text.cpp src\fileinfo.cpp src\search.cpp /F
 ```
 127/127 tests passed.
 ```
+## 交互样例
+```text
+Scan directory:E:/光标
+Found 21 files.
 
+Enter any to leave a condition unrestricted.
+Sizes are in bytes.
+Enter exit at the keyword prompt to quit.
+Use double quotes for literal text, e.g. "any" or "exit".
+
+Search:
+keyword: 必看
+
+search_extname: .txt
+
+min_size: 0
+
+max_size: any
+
+Find 1 files.
+"E:/光标\\必看.txt"
+Search:
+keyword: exit
+```
+输入四个字段后会进行检查，非法输入会要求重新输入，如：
+```text
+Scan directory:E:/光标
+Found 21 files.
+
+Enter any to leave a condition unrestricted.
+Sizes are in bytes.
+Enter exit at the keyword prompt to quit.
+Use double quotes for literal text, e.g. "any" or "exit".
+
+Search:
+keyword:
+
+search_extname: .txt
+
+min_size: any
+
+max_size: any
+
+Error:keyword is empty
+input keyword again:
+```
 ## 项目结构
 ```
 file-searcsh-tool/
