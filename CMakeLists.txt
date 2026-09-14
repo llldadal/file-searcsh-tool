@@ -41,12 +41,12 @@ target_link_libraries(
 )
 
 add_executable(
-    file_search_text
+    file_search_tests
     text/v0.2_text.cpp
 )
 
 target_link_libraries(
-    file_search_text
+    file_search_tests
     PRIVATE
     search_core
 )
