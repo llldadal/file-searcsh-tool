@@ -54,6 +54,9 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp src\search.cpp /Fe:file-sea
 ```
 ### 方法三：使用cmake构建
 
+CMake版本：cmake_minimum_required(VERSION 3.20)
+生成器：CMAKE_GENERATOR:INTERNAL=Visual Studio 18 2026
+
 在 Visual Studio Developer PowerShell 或 Developer Command Prompt 中进入项目目录，然后执行：
 
 ```powershell
@@ -62,7 +65,7 @@ cmake --build build
 ```
 运行程序：
 ```powershell
-.\build\DeBug\file-search.exe
+.\build\DeBug\file_search.exe
 ```
 
 ## 当前测试
@@ -73,7 +76,7 @@ cmake --build build
 
 运行程序：
 ```powershell
-.\build\DeBug\v0.2_text.exe
+.\build\DeBug\file_search_text.exe
 ```
 预期输出(省略PASS输出)：
 ```

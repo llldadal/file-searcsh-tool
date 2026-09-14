@@ -1,16 +1,21 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(
-    file-search-engine
+    file_search_engine
     VERSION 0.3
     LANGUAGES CXX
 )
 
 add_library(
     search_core
+    STATIC
     src/fileinfo.cpp
     src/search.cpp
 )
+
+if(MSVC)
+    target_compile_options(search_core PUBLIC /utf-8)
+endif()
 
 target_compile_features(
     search_core
