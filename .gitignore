@@ -17,3 +17,6 @@ x86/
 #构建文件
 *.exe
 *.obj
+
+#cmake构建文件
+/build/

@@ -52,18 +52,28 @@ cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp src\search.cpp /Fe:file-sea
 ```powershell
 .\file-search.exe
 ```
+### 方法三：使用cmake构建
+
+在 Visual Studio Developer PowerShell 或 Developer Command Prompt 中进入项目目录，然后执行：
+
+```powershell
+cmake -S . -B build
+cmake --build build
+```
+运行程序：
+```powershell
+.\build\DeBug\file-search.exe
+```
 
 ## 当前测试
 ### 搜索信息解析测试
 #### 测试程序构建方法
-在 Visual Studio Developer PowerShell 或 Developer Command Prompt 中进入项目目录，然后执行：
 
-```powershell
-cl /std:c++17 /EHsc /utf-8 text\v0.2_text.cpp src\fileinfo.cpp src\search.cpp /Fe:text\v0.2_text.exe
-```
+采用上文方法三构建程序
+
 运行程序：
 ```powershell
-.\text\v0.2_text.exe
+.\build\DeBug\v0.2_text.exe
 ```
 预期输出(省略PASS输出)：
 ```
