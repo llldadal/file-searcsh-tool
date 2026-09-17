@@ -39,12 +39,18 @@
     <ClCompile Include="text\v0.2_text.cpp">
       <Filter>源文件\text</Filter>
     </ClCompile>
+    <ClCompile Include="src\interaction.cpp">
+      <Filter>源文件\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\fileinfo.h">
       <Filter>头文件\src</Filter>
     </ClInclude>
     <ClInclude Include="src\search.h">
+      <Filter>头文件\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interaction.h">
       <Filter>头文件\src</Filter>
     </ClInclude>
   </ItemGroup>

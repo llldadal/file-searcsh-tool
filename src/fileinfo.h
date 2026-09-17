@@ -14,4 +14,3 @@ struct FileInfo {
 FileInfo GetFile(std::filesystem::directory_entry entry);
 //扫描目录
 std::vector<FileInfo> ScanDirectory(const std::string& search_directory_path);
-

@@ -61,7 +61,9 @@ CMake版本：4.3.1-msvc1
 
 ```powershell
 cmake -S . -B build
-cmake --build build
+cmake --build build --config Debug
+.\build\Debug\file_search.exe
+.\build\Debug\file_search_tests.exe
 ```
 运行程序：
 ```powershell

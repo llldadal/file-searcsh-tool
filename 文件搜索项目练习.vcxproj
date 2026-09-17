@@ -148,6 +148,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\fileinfo.cpp" />
+    <ClCompile Include="src\interaction.cpp" />
     <ClCompile Include="src\search.cpp" />
     <ClCompile Include="text\v0.2_text.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -158,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\fileinfo.h" />
+    <ClInclude Include="src\interaction.h" />
     <ClInclude Include="src\search.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
