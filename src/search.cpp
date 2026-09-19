@@ -197,16 +197,7 @@ SearchFile_return SearchRequiedInput(std::string keyword, std::string search_ext
 	re.effective = true;
 	return re;
 }
-//错误解析函数
-int ErrorAnalysis(const SearchFile_return& re, std::ostream& output) {
-	if (re.effective) {
-		return 0;
-	}
-	else {
-		output << "Error:" << re.errror_message << std::endl;
-		return re.error_type;
-	}
-}
+
 //搜索函数
 std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const std::string& keyword) {
 	std::vector<FileInfo> result;

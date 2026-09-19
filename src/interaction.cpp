@@ -166,3 +166,14 @@ int RunInteraction(std::istream& input, std::ostream& output, std::ostream& erro
 		SearchResuluOutput(output, files);
 	}
 }
+
+//错误解析函数
+int ErrorAnalysis(const SearchFile_return& re, std::ostream& output) {
+	if (re.effective) {
+		return 0;
+	}
+	else {
+		output << "Error:" << re.errror_message << std::endl;
+		return re.error_type;
+	}
+}

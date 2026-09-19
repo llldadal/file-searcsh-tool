@@ -35,7 +35,7 @@ v0.3 的目标是对现有主程序代码和测试代码进行解耦、且改为
 在 Visual Studio Developer PowerShell 或 Developer Command Prompt 中进入项目目录，然后执行：
 
 ```powershell
-cl /std:c++17 /EHsc /utf-8 main.cpp src\fileinfo.cpp src\search.cpp /Fe:file-search.exe
+cl /std:c++17 /EHsc /utf-8 main.cpp src\interaction.cpp src\fileinfo.cpp src\search.cpp /Fe:file-search.exe
 ```
 
 运行程序：
@@ -136,7 +136,9 @@ file-searcsh-tool/
 
 各文件用途：
 
-- `main.cpp`：程序入口和当前阶段的测试代码
+- `main.cpp`：连接标准输入输出并调用交互入口
+- `src/interaction.h`：定义交互模块
+- `src/interaction.cpp`：实现交互模块
 - `src/fileinfo.h`：定义文件信息结构
 - `src/fileinfo.cpp`：存放文件信息相关实现
 - `src/search.h`：定义搜索信息结构
