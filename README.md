@@ -4,24 +4,15 @@
 
 这是一个使用 C++ 编写的命令行文件搜索工具。
 
-v0.2 的目标是支持关键字、拓展名、大小的组合搜索。
+v0.3 的目标是对现有主程序代码和测试代码进行解耦、且改为CMake构建
 
 ## 当前进度
 
 目前已完成：
 
-- 建立可编译的 C++ 项目
-- 定义 `FileInfo` 数据结构
-- 使用 `std::vector<FileInfo>` 保存文件信息
-- 完成文件信息容器的基本输出测试
-- 完成递归扫描真实目录
-- 完成单次的简单文件搜索
-- 命令行交互循环
-- 组合搜索信息的保存
-- 组合搜索信息的输入
-- 组合搜索信息的解析，包括识别引号、判断数字是否溢出等
-- 组合搜索
-- 组合搜索功能添加至主循环
+- CMake构建
+- 全部接口输入输出可重定向
+- 测试程序和主程序解耦
 
 ## 开发环境
 
@@ -62,8 +53,6 @@ CMake版本：4.3.1-msvc1
 ```powershell
 cmake -S . -B build
 cmake --build build --config Debug
-.\build\Debug\file_search.exe
-.\build\Debug\file_search_tests.exe
 ```
 运行程序：
 ```powershell

@@ -11,6 +11,7 @@ add_library(
     STATIC
     src/fileinfo.cpp
     src/search.cpp
+    src/interaction.cpp
 )
 
 if(MSVC)

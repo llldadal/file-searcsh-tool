@@ -1,4 +1,5 @@
 #include "../src/search.h"
+#include "../src/interaction.h"
 
 #include <algorithm>
 #include <chrono>
@@ -15,10 +16,6 @@
 #include <utility>
 #include <vector>
 
-#define main runFileSearchProgram
-#include "../main.cpp"
-#undef main
-
 namespace {
 
 enum class ErrorField { keyword, extension, minimum_size, maximum_size, unknown };
@@ -29,6 +26,9 @@ struct TestRunner {
     int failed = 0;
 
     void check(const std::string& name, bool passed, const std::string& detail = {}) {
+        // 单个断言的基本格式：
+        // runner.check("想验证的行为", 实际值 == 期望值, "失败时的说明");
+        // passed 只放一个明确的判断，这样失败时才能立刻知道哪个行为不对。
         ++total;
         if (passed) {
             std::cout << "[PASS] " << name << '\n';
@@ -292,6 +292,7 @@ private:
 };
 
 std::string runInteraction(const std::vector<std::string>& lines) {
+    // 用字符串流代替真实的键盘和控制台，测试时就不需要手动输入。
     std::ostringstream input_text;
     for (const auto& line : lines) {
         input_text << line << '\n';
@@ -299,24 +300,12 @@ std::string runInteraction(const std::vector<std::string>& lines) {
 
     std::istringstream input(input_text.str());
     std::ostringstream output;
-    std::streambuf* const original_input = std::cin.rdbuf(input.rdbuf());
-    std::streambuf* const original_output = std::cout.rdbuf(output.rdbuf());
-    const std::ios::iostate original_input_state = std::cin.rdstate();
-    std::cin.clear();
 
-    try {
-        runFileSearchProgram();
-    }
-    catch (...) {
-        std::cin.rdbuf(original_input);
-        std::cout.rdbuf(original_output);
-        std::cin.clear(original_input_state);
-        throw;
-    }
+    // 最新的交互接口已经支持传入 input、output 和 errorout，
+    // 因此直接测试 RunInteraction，不再包含 main.cpp，也不再替换 std::cin/std::cout 的缓冲区。
+    // 主程序会把普通输出和错误输出都传给 std::cout，此处使用同一个 output 保持行为一致。
+    RunInteraction(input, output, output);
 
-    std::cin.rdbuf(original_input);
-    std::cout.rdbuf(original_output);
-    std::cin.clear(original_input_state);
     return output.str();
 }
 
@@ -327,6 +316,11 @@ void runT4InteractionTests(TestRunner& runner) {
     auto checkOutput = [&](const std::string& name, const std::vector<std::string>& input,
         const auto& predicate, const std::string& expectation) {
         const std::string output = runInteraction(input);
+
+        // 写一个断言时，依次填入：测试名、布尔判断、失败说明。
+        // 例：runner.check("output contains prompt",
+        //                    contains(output, "keyword: "),
+        //                    "expected the keyword prompt; output: " + output);
         runner.check("T4 interaction: " + name, predicate(output),
             "expected " + expectation + "; output: " + output);
     };

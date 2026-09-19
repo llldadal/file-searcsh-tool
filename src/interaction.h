@@ -10,3 +10,5 @@ bool Input(std::istream& input, std::string& target);
 bool MainInput(std::istream& input, std::ostream& output, std::ostream& errorout, SearchFile_return& re);
 //搜索根目录输入过程
 bool RootInput(std::istream& input, std::ostream& output, std::string& search_directory_path);
+//主循环
+int RunInteraction(std::istream& input, std::ostream& output, std::ostream& errorout);
