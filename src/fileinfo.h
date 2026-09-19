@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <optional>
+#include <iostream>
 //文件信息
 struct FileInfo {
 	std::string file_name;
@@ -13,5 +14,4 @@ struct FileInfo {
 //获取文件
 FileInfo GetFile(std::filesystem::directory_entry entry);
 //扫描目录
-std::vector<FileInfo> ScanDirectory(const std::string& search_directory_path);
-
+std::vector<FileInfo> ScanDirectory(const std::string& search_directory_path, std::ostream& errorout);

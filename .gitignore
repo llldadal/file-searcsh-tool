@@ -17,3 +17,12 @@ x86/
 #构建文件
 *.exe
 *.obj
+
+#cmake构建文件
+/build/
+/build-release/
+
+# Visual Studio构建文件
+*.slnx
+*.vcxproj
+*.vcxproj.filters

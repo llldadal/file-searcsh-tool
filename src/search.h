@@ -28,8 +28,7 @@ SearchFile_return SearchRequiedInput(std::string keyword = "any", std::string se
 bool isNumber(std::string& s);
 bool RemoveQuotationMarks(std::string& s);
 bool strNuberCompare(const std::string& s1, const std::string& s2);
-//错误解析函数
-int ErrorAnalysis(const SearchFile_return& re);
+
 //搜索函数
 std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const std::string& keyword);
 std::vector<FileInfo> SearchFiles(const std::vector<FileInfo>& file_list, const FileSearch& search_file);

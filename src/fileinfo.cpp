@@ -10,7 +10,7 @@ FileInfo GetFile(std::filesystem::directory_entry entry) {
 	}
 	return file;
 }
-std::vector<FileInfo> ScanDirectory(const std::string& search_directory_path) {
+std::vector<FileInfo> ScanDirectory(const std::string& search_directory_path, std::ostream& errorout) {
 	std::vector<FileInfo> file_list;
 	//扫描目录
 	std::error_code ec;
@@ -23,7 +23,7 @@ std::vector<FileInfo> ScanDirectory(const std::string& search_directory_path) {
 		directories.pop_back();
 		fs::directory_iterator it(current_directory, ec);
 		if (ec) {
-			std::cout << "warning: " << current_directory << " is not open" << std::endl;
+			errorout << "warning: " << current_directory << " is not open" << std::endl;
 			continue;
 		}
 		else {
@@ -40,7 +40,7 @@ std::vector<FileInfo> ScanDirectory(const std::string& search_directory_path) {
 				}
 				it.increment(ec);
 				if (ec) {
-					std::cout << "error " << ec.message() << " in " << current_directory << std::endl;
+					errorout << "error " << ec.message() << " in " << current_directory << std::endl;
 					break;
 				}
 			}
