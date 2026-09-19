@@ -39,8 +39,7 @@ cmake --build build --config Debug
 ```
 
 ## 当前测试
-### 搜索信息解析测试
-#### 测试程序构建方法
+### 测试程序构建方法
 
 运行所有测试：
 ```powershell
@@ -64,7 +63,19 @@ ctest --test-dir build -C Debug -R "^test_search$"
 ctest --test-dir build -C Debug -R "^test_parsing$"
 ctest --test-dir build -C Debug -R "^test_interaction$"
 ```
+### 只构建正式程序
 
+关闭测试目标并构建 Release 版本：
+
+```powershell
+cmake -S . -B build-release -DBUILD_TESTING=OFF
+cmake --build build-release --config Release\
+```
+
+运行程序：
+```
+.\build-release\Release\file_search.exe
+```
 ## 交互样例
 ```text
 Scan directory:E:/光标
