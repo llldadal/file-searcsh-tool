@@ -24,28 +24,6 @@ v0.3 的目标是对现有主程序代码和测试代码进行解耦、且改为
 
 ## 构建方法
 
-### 方法一：使用 Visual Studio
-
-1. 使用 Visual Studio 打开 `文件搜索项目练习.slnx`。
-2. 选择 `Debug` 和 `x86` 配置。
-3. 执行“生成解决方案”。
-4. 运行生成的程序。
-
-### 方法二：使用命令行
-
-在 Visual Studio Developer PowerShell 或 Developer Command Prompt 中进入项目目录，然后执行：
-
-```powershell
-cl /std:c++17 /EHsc /utf-8 main.cpp src\interaction.cpp src\fileinfo.cpp src\search.cpp /Fe:file-search.exe
-```
-
-运行程序：
-
-```powershell
-.\file-search.exe
-```
-### 方法三：使用cmake构建
-
 CMake版本：4.3.1-msvc1
 生成器：CMAKE_GENERATOR:INTERNAL=Visual Studio 18 2026
 
@@ -53,30 +31,23 @@ CMake版本：4.3.1-msvc1
 
 ```powershell
 cmake -S . -B build
-cmake --build build-release --config Release
+cmake --build build --config Debug
 ```
 运行程序：
 ```powershell
-.\build-releasd\Release\file_search.exe
+.\build\Debug\file_search.exe
 ```
 
 ## 当前测试
 ### 搜索信息解析测试
 #### 测试程序构建方法
 
-构建命令：
-
-```
-cmake -S . -B build
-cmake --build build-release --config Release
-```
-
 运行所有测试：
 ```powershell
 ctest --test-dir build -C Debug --output-on-failure
 ```
 预期输出(省略PASS输出)：
-```
+```text
  Start 1: test_search
 1/3 Test #1: test_search ......................   Passed    0.04 sec
     Start 2: test_parsing
@@ -86,6 +57,14 @@ ctest --test-dir build -C Debug --output-on-failure
 
 100% tests passed, 0 tests failed out of 3
 ```
+
+还可运行单个测试：
+```powershell
+ctest --test-dir build -C Debug -R "^test_search$"
+ctest --test-dir build -C Debug -R "^test_parsing$"
+ctest --test-dir build -C Debug -R "^test_interaction$"
+```
+
 ## 交互样例
 ```text
 Scan directory:E:/光标
@@ -142,9 +121,7 @@ file-searcsh-tool/
 │   ├── fileinfo.h
 │   └── fileinfo.cpp
 ├── README.md
-├── text/
-│   └── v0.2_text.cpp
-└── 文件搜索项目练习.slnx
+└──  tests/
 ```
 
 各文件用途：
@@ -157,7 +134,7 @@ file-searcsh-tool/
 - `src/search.h`：定义搜索信息结构
 - `src/search.cpp`：存放搜索信息相关实现
 - `README.md`：项目构建和使用说明
-- `text`:测试文件
+- `tests`:测试文件
 
 ## 项目状态
 
