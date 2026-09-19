@@ -41,13 +41,58 @@ target_link_libraries(
     search_core
 )
 
+include(CTest)
+
+if(BUILD_TESTING)
+    # 测试1
 add_executable(
-    file_search_tests
-    text/v0.2_text.cpp
+    test_search
+    tests/test_support.cpp
+    tests/search_tests.cpp
 )
 
 target_link_libraries(
-    file_search_tests
+    test_search
     PRIVATE
     search_core
 )
+
+add_test(
+    NAME test_search
+    COMMAND test_search
+)
+# 测试2
+add_executable(
+    test_parsing
+    tests/test_support.cpp
+    tests/parsing_tests.cpp
+)
+
+target_link_libraries(
+    test_parsing
+    PRIVATE
+    search_core
+)
+
+add_test(
+    NAME test_parsing
+    COMMAND test_parsing
+)
+# 测试3
+add_executable(
+    test_interaction
+    tests/test_support.cpp
+    tests/interaction_tests.cpp
+)
+
+target_link_libraries(
+    test_interaction
+    PRIVATE
+    search_core
+)
+
+add_test(
+    NAME test_interaction
+    COMMAND test_interaction
+)
+endif()

@@ -42,6 +42,18 @@
     <ClCompile Include="src\interaction.cpp">
       <Filter>源文件\src</Filter>
     </ClCompile>
+    <ClCompile Include="text\interaction_tests.cpp">
+      <Filter>源文件\text</Filter>
+    </ClCompile>
+    <ClCompile Include="text\parsing_tests.cpp">
+      <Filter>源文件\text</Filter>
+    </ClCompile>
+    <ClCompile Include="text\search_tests.cpp">
+      <Filter>源文件\text</Filter>
+    </ClCompile>
+    <ClCompile Include="text\test_support.cpp">
+      <Filter>源文件\text</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\fileinfo.h">
@@ -52,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="src\interaction.h">
       <Filter>头文件\src</Filter>
+    </ClInclude>
+    <ClInclude Include="text\test_support.h">
+      <Filter>源文件\text</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

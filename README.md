@@ -13,6 +13,7 @@ v0.3 的目标是对现有主程序代码和测试代码进行解耦、且改为
 - CMake构建
 - 全部接口输入输出可重定向
 - 测试程序和主程序解耦
+- CTest构建
 
 ## 开发环境
 
@@ -52,26 +53,38 @@ CMake版本：4.3.1-msvc1
 
 ```powershell
 cmake -S . -B build
-cmake --build build --config Debug
+cmake --build build-release --config Release
 ```
 运行程序：
 ```powershell
-.\build\DeBug\file_search.exe
+.\build-releasd\Release\file_search.exe
 ```
 
 ## 当前测试
 ### 搜索信息解析测试
 #### 测试程序构建方法
 
-采用上文方法三构建程序
+构建命令：
 
-运行程序：
+```
+cmake -S . -B build
+cmake --build build-release --config Release
+```
+
+运行所有测试：
 ```powershell
-.\build\DeBug\file_search_tests.exe
+ctest --test-dir build -C Debug --output-on-failure
 ```
 预期输出(省略PASS输出)：
 ```
-127/127 tests passed.
+ Start 1: test_search
+1/3 Test #1: test_search ......................   Passed    0.04 sec
+    Start 2: test_parsing
+2/3 Test #2: test_parsing .....................   Passed    0.03 sec
+    Start 3: test_interaction
+3/3 Test #3: test_interaction .................   Passed    0.04 sec
+
+100% tests passed, 0 tests failed out of 3
 ```
 ## 交互样例
 ```text
@@ -148,7 +161,7 @@ file-searcsh-tool/
 
 ## 项目状态
 
-v0.2 核心功能已完成。
+v0.3 核心功能已完成。
 
 ## 已知限制
 

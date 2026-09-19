@@ -150,6 +150,10 @@
     <ClCompile Include="src\fileinfo.cpp" />
     <ClCompile Include="src\interaction.cpp" />
     <ClCompile Include="src\search.cpp" />
+    <ClCompile Include="text\interaction_tests.cpp" />
+    <ClCompile Include="text\parsing_tests.cpp" />
+    <ClCompile Include="text\search_tests.cpp" />
+    <ClCompile Include="text\test_support.cpp" />
     <ClCompile Include="text\v0.2_text.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -161,6 +165,7 @@
     <ClInclude Include="src\fileinfo.h" />
     <ClInclude Include="src\interaction.h" />
     <ClInclude Include="src\search.h" />
+    <ClInclude Include="text\test_support.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
