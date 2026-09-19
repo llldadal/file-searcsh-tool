@@ -69,7 +69,7 @@ ctest --test-dir build -C Debug -R "^test_interaction$"
 
 ```powershell
 cmake -S . -B build-release -DBUILD_TESTING=OFF
-cmake --build build-release --config Release\
+cmake --build build-release --config Release
 ```
 
 运行程序：
